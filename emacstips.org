@@ -1,0 +1,247 @@
+#+Title Emacs Usage
+
+* Emacs Usage
+
+** Keyboard Shortcuts
+
+| Name                       | Action                         | Further details                                       |
+|----------------------------+--------------------------------+-------------------------------------------------------|
+| Creating a buffer          | C-x 3                          | Split vertically, side by side                        |
+| Switching between buffers  | C-x o                          | Place the cursor in the other buffer                  |
+| Creating a buffer          | C-x 1                          | Split horizontally, one up and one down               |
+| Evaluate buffer            | M-x eval-buffer                | or alternatively, use *C-c C-e*                       |
+| Accessing Messages buffer  | C-x b **Messages**             |                                                       |
+| Yank                       | C-y                            | or copy from menu bar                                 |
+| Set link                   | C-c C-l                        | Example: orgmode manual can be found on this [[https://orgmode.com/manual][page]]     |
+| Open link                  | C-c C-o                        |                                                       |
+| Highlight text             | C-spc                          | Essentially just sets a mark that follows the cursor. |
+| Tables                     | Just add headings + TAB        |                                                       |
+| Bulleted Lists             | Shift + left                   | to cycle between the different modes                  |
+| Checklists                 | Just add square brackets + SPC | To check it, put capital X or *C-x C-x C-b*           |
+| Heading states             | C-c C-t / Shift+left           | (Todo, done, next)                                    |
+| Bold text                  | **                             | Two stars                                             |
+| Italic text                | //                             | Two forward slashes                                   |
+| Insert separator after row | C-e RET                        |                                                       |
+| Code text in line          | ~~                             | Two squiggly lines                                    |
+| Source code block (C)      | <c + TAB                       |                                                       |
+| Source code block (e-lisp) | <el + TAB                      |                                                       |
+
+
+** Tasks
+/Commands and shortcuts that help organise daily life/
+
+*** Org agenda
+1. a view that will aggregate all tasks in one place so that you may look at all of them at once.
+2. Use *org-schedule* command to schedule certain dates  (or use *C-c C-s)*
+3. Run *org-agenda* command to see the tasks scheduled for certain days.
+4. Run *org-refile* command to refile the tasks from the main Tasks.org file to the other headings / subheadings.
+5. Run *org-habit* command to schedule a task that repeats.
+
+
+*** Tags
+- Use *Counsel-org-tag* and then add tags
+- Use *C-c C-q* to quickly access tags
+- Use :PROPERTIES: and :END: to assign features like
+  - *:Effort:* - how long you reck the task would take
+- *Shift+^* - to set the priority
+
+  
+** Org-babel
+/Configurations and tweaks available when compiling and writing code or config/
+
+*** Source Blocks
+- To compile code, just run *C-c C-c*, but first remember to include in init.el
+
+  #+begin_src emacs-lisp
+        
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((C . t))
+     '(Python . t))
+
+  #+end_src
+  
+- To quickly get the source block, just add the *<* and the shortcut that you added.
+
+  e.g. in the following source block just add the *<code* + tab for the source code block for c to show up:
+
+  #+begin_src emacs-lisp
+        
+    (add-to-list 'org-structure-template-alist '("code" . "src C"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    
+  #+end_src
+
+
+*** Org-babel tangle
+- This is a way to put all code blocks in one file, e.g let's say you have a bunch of code blocks on one file with normal text surrounding them, like headings, subheadings, etc. This would only take all code blocks and then write them to another file, where you won't see the text. Adding the following text to the top of the org file would tell emacs to tangle all code blocks and write them to example.el.
+  
+  - Helpful for when trying to understand a /C programme/, since then you can just write the explanation and separate the code into blocks, but when running the full programme, you can write it to /example.c/ (for example) and then just compile the programme separately.
+
+  - All the following does is add the properties to the headers of the code blocks with the following arguments:
+    - emacs-lisp
+    - :tangle ./example.el
+    
+  #+begin_src emacs-lisp
+
+    #+PROPERTY: header-args:emacs-lisp :tangle ./example.el
+    
+  #+end_src
+
+  - If you don't want all the code blocks to go to that file, only a certain number, then you can just add the following next the /begin_src/ for the code blocks that you want to have that property:
+
+  #+begin_src emacs-lisp
+    
+    :tangle ./example.el
+
+  #+end_src  
+
+- If you want to save it to a file that is in a folder that does not exist, then you can just set the following property:
+
+  #+begin_src emacs-lisp
+
+    :mkdirp yes
+
+  #+end_src
+
+  - Everytime you change the source blocks, just refresh *org-mode* and then run *org-babel-tangle* to tangle all blocks to their respective file.
+  - To then see the changes in the new file, just *revert-buffer*.
+    - Enabling *auto-revert-mode* makes this much easier.
+
+
+**** Auto-tangling
+- Adding the following code to /init.el/ would allow you to auto tangle your file:
+
+  #+begin_src emacs-lisp
+
+    ;; Automatically tangle our Emacs.org config file when we save it
+    (defun efs/org-babel-tangle-config ()
+      (when (string-equal (buffer-file-name)
+                          (expand-file-name "~/example.org"))
+
+        ;; Dynamic scoping to the rescue
+        (let ((org-confirm-babel-evaluate nil))
+          (org-babel-tangle))))
+
+    (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+
+   #+end_src
+    
+
+** Lsp-mode
+
+| Name              | Command                           | Action    | Notes                                          |
+|-------------------+-----------------------------------+-----------+------------------------------------------------|
+| Basic completions | ~completion-at-point~             |           | for completions                                |
+| Find definitions  | ~lsp-find-definition~             | C-c l g r | to find any definitions in the file            |
+| Find references   | ~lsp-find-reference~              | C-c l g g | to find any references in the file             |
+| Rename symbol     | ~lsp-rename~                      | C-c l r r | To rename all variables of the same name       |
+| Show diagnostics  | ~flymake-show-diagnostics-buffer~ |           | To show the error messages before compilation. |
+
+
+** Term mode
+/terminal emulator written in emacs-lisp/
+
+*** Some history:
+- Terminals were originally devices that received input from the user and sent it to a remote computer, that then displayed the output.
+- A terminal emulator replicates this behavior in software: it takes instructions from *you*, the user and sends them to the CPU or shell, while showing the results on the screen.
+
+
+*** Code
+
+#+begin_src emacs-lisp
+
+     
+  (use-package eterm-256color
+     :hook (term-mode . eterm-256color-mode))
+
+
+#+end_src
+
+
+** Dired 
+/A way to effortlessly manage files, can also be accessed through *C-x d* ./
+
+*** Keyboard Shortcuts
+
+**** Emacs/ Evil
+- ~n / j~ - next line
+- ~p / k~ - previous line
+- ~j / J~ - jump to file in buffer
+- ~RET~ - select file or directory
+- ~^~ - go to parent directory
+- ~S-RET / g O~ - Open file in “other” window
+- ~M-RET~ - Show file in other window without focusing (previewing files)
+- ~g o (dired-view-file)~ - Open file but in a “preview” mode, close with q
+- ~g / g r~ Refresh the buffer with revert-buffer after changing configuration
+
+
+
+**** Marking a file
+- ~m~ - Marks a file
+- ~u~ - Unmarks a file
+- ~U~ - Unmarks all files in buffer
+- ~*t / t~ - Inverts marked files in buffer
+- ~% m~ - Mark files in buffer using regular expression
+- ~*-~ Lots of other auto-marking functions
+- ~k / K~ - “Kill” marked items (refresh buffer with g / g r to get them back)
+
+  
+**** Copying and renaming files
+- ~C~ - Copy marked files (or if no files are marked, the current file)
+- Copying single and multiple files
+- ~U~ - Unmark all files in buffer
+- ~R~ - Rename marked files, renaming multiple is a move!
+- ~% R~ - Rename based on regular expression: ^test , old-\&
+
+  
+**** Deleting files
+- ~D~ - Delete marked file
+- ~d~ - Mark file for deletion
+- ~x~ - Execute deletion for marks
+- ~delete-by-moving-to-trash~ - Move to trash instead of deleting permanently
+
+  
+**** Creating and extracting archives
+- ~Z~ - Compress or uncompress a file or folder to (.tar.gz)
+- ~c~ - Compress selection to a specific file
+- ~dired-compress-files-alist~ - Bind compression commands to file extension
+
+  
+**** Other common operations
+- ~T~ - Touch (change timestamp)
+- ~M~ - Change file mode
+- ~O~- Change file owner
+- ~G~ - Change file group
+- ~S~ - Create a symbolic link to this file
+- ~L~ - Load an Emacs Lisp file into Emacs
+
+
+
+
+** Theory
+
+*** Hooks and Modes
+- A hook function is something that is executed when that mode is active, e.g. term-mode-hook is when the terminal buffer is active.
+  
+
+*** Universal-argument
+- A shortcut like ~C-u~ that you add before other shortcuts to change their behaviour; can be augmented multiple times to shift the behavioural change, but not commonly used.
+  
+
+** Projectile and Magit
+/To help manage your github/
+
+| Key       | Action                  |
+| --------- | ----------------------- |
+| ~C-x g~   | Open Magit status       |
+| ~s        | Stage file under cursor |
+| ~S~       | Stage all files         |
+| ~u~       | Unstage file            |
+| ~c c~     | Commit changes          |
+| ~C-c C-c~ | Finalize commit message |
+| ~P p~     | Push to GitHub          |
+| ~F p~     | Pull from GitHub        |
+| ~b b~     | Switch/create branch    |
+| ~l l~     | View commit log         |
+
