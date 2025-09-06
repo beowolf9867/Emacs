@@ -458,6 +458,7 @@
 
   (add-to-list 'org-structure-template-alist '("code" . "src C"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list `org-structure-template-alist `("sh" . "src shell"))
 
   ;; Automatically tangle our Emacs.org config file when we save it
       (defun efs/org-babel-tangle-config ()
@@ -647,3 +648,37 @@
 
 
   #+end_src
+
+
+** Export options
+
+*** PDFs and latextopdf
+
+**** 1. On macOS
+- Install a LaTeX distribution:
+  - macOS doesn’t come with LaTeX by default. You have two main options:
+    - MacTeX (recommended full distribution): Download: https://tug.org/mactex/ /(This includes pdflatex, xelatex, and all necessary packages)/. After installation, make sure /usr/texbin or /Library/TeX/texbin is in your PATH.
+    - BasicTeX (lightweight version): Smaller download, but you may need to install extra packages as you export.
+      - Install via Homebrew:
+
+#+begin_src shell
+
+  brew install --cask basictex
+  sudo tlmgr update --self
+  sudo tlmgr install collection-latexextra
+          
+#+end_src
+        
+**** Configure E-macs orgmode for PDF support
+
+#+begin_src emacs-lisp
+
+  ;; Enable LaTeX PDF export in Org
+  (require 'ox-latex)
+
+  ;; Use xelatex for better font support (optional)
+  (setq org-latex-pdf-process
+        '("xelatex -interaction=nonstopmode -output-directory=%o %f"
+          "xelatex -interaction=nonstopmode -output-directory=%o %f"))
+
+#+end_src
