@@ -245,3 +245,72 @@
 | ~b b~     | Switch/create branch    |
 | ~l l~     | View commit log         |
 
+
+*** How to use github with magit?
+
+**** 1. Open your project in Emacs
+- C-x C-f ~/path/to/your-repo/
+- Navigate to the folder where your repo lives
+
+
+**** 2. Edit or create files
+- Edit an existing file → save with C-x C-s
+- Create a new file → C-x C-f newfile.txt → write content → C-x C-s
+- Files are now changed locally but not yet tracked by Git
+
+
+**** 3. Open Magit status
+- C-x g
+- Sections you'll see:
+  - Unstaged changes → edited files
+  - Untracked files → new files
+  - Staged changes → files ready to commit
+
+
+**** 4. Stage changes
+- Move cursor over a file → press s to stage
+- To stage all files at once → press S (capital S)
+- Staged files move to "Staged changes"
+
+
+**** 5. Commit changes
+- Press c c → opens commit message buffer
+- Write a meaningful commit message
+- Press C-c C-c to finish commit
+- Changes are now saved in local Git history
+
+
+**** 6. Push to GitHub
+- Press P → opens push popup
+- If upstream is set:
+  - Press p → pushes current branch to GitHub
+- If upstream not set (first push):
+  - Press u → select origin → main → sets upstream and pushes
+- After a rebase/conflict, force push if needed:
+  - Press P → F (force push to upstream)
+
+
+**** 7. Verify on GitHub
+- Open your repo page in a browser
+- You should see:
+  - New or updated files
+  - Commit history reflecting your latest commit
+
+
+**** 8. Optional: Handle merge conflicts
+- Open conflicted file(s) → resolve manually
+- Stage resolved file → s
+- Commit → c c → C-c C-c
+- Push → P p
+
+
+**** 9. Repeatable workflow summary
+- Edit/add files → save
+- Magit status → C-x g
+- Stage → s (or S)
+- Commit → c c → C-c C-c
+- Push → P p (or P u for upstream / P F for force push)
+- Refresh GitHub → changes appear
+
+
+
