@@ -1,0 +1,5 @@
+#+TITLE: README
+
+* EMACS
+
+/This repository was made to document my progress with e-macs. It is not advised to use this when starting out./
