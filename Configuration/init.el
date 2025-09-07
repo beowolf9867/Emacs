@@ -252,6 +252,7 @@
 
 (add-to-list 'org-structure-template-alist '("code" . "src C"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list `org-structure-template-alist `("sh" . "src shell"))
 
 ;; Automatically tangle our Emacs.org config file when we save it
     (defun efs/org-babel-tangle-config ()
@@ -318,3 +319,36 @@
 
   (use-package forge
 :after magit)
+
+;; Enable LaTeX PDF export in Org
+(require 'ox-latex)
+
+;; Use xelatex for better font support (optional)
+(setq org-latex-pdf-process
+      '("xelatex -interaction=nonstopmode -output-directory=%o %f"
+        "xelatex -interaction=nonstopmode -output-directory=%o %f"))
+
+;; Show each buffer as a tab (like Chrome)
+(global-tab-line-mode 1)
+
+;; Place tabs at the bottom (default is top)
+(setq tab-line-position 'bottom)
+
+;; Keybindings to move between tabs
+(global-set-key (kbd "s-<right>") #'tab-line-switch-to-next-tab)
+(global-set-key (kbd "s-<left>")  #'tab-line-switch-to-prev-tab)
+
+(defun my/applications-directory ()
+  "Return list of .app bundles in /Applications."
+  (directory-files "/Applications" t "\\.app\\'"))
+
+(defun my/launch-app (app-path)
+  "Launch macOS application at APP-PATH."
+  (start-process "app-launcher" nil "open" "-a" app-path))
+
+(dolist (app (my/applications-directory))
+  (let* ((name (file-name-base app))
+         (fn   (intern (concat "app/open-" (replace-regexp-in-string " " "-" (downcase name))))))
+    (fset fn `(lambda () (interactive) (my/launch-app ,app)))
+    (put fn 'function-documentation (concat "Launch " name))
+    (defalias fn (symbol-function fn))))

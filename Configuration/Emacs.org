@@ -1,4 +1,4 @@
-#+PROPERTY: header-args:emacs-lisp :tangle /Users/abdul/.emacs.d/init.el
+#+PROPERTY: header-args:emacs-lisp :tangle /Users/abdul/Projects/Emacs/Configuration/init.el
 
 * Emacs config with explanations
 
@@ -668,6 +668,7 @@
           
 #+end_src
         
+
 **** Configure E-macs orgmode for PDF support
 
 #+begin_src emacs-lisp
@@ -679,5 +680,38 @@
   (setq org-latex-pdf-process
         '("xelatex -interaction=nonstopmode -output-directory=%o %f"
           "xelatex -interaction=nonstopmode -output-directory=%o %f"))
+
+#+end_src
+
+
+** Using emacs like a 'desktop manager' on macOS
+
+#+begin_src emacs-lisp
+
+  
+;; Show each buffer as a tab (like Chrome)
+(global-tab-line-mode 1)
+
+;; Place tabs at the bottom (default is top)
+(setq tab-line-position 'bottom)
+
+;; Keybindings to move between tabs
+(global-set-key (kbd "s-<right>") #'tab-line-switch-to-next-tab)
+(global-set-key (kbd "s-<left>")  #'tab-line-switch-to-prev-tab)
+
+(defun my/applications-directory ()
+  "Return list of .app bundles in /Applications."
+  (directory-files "/Applications" t "\\.app\\'"))
+
+(defun my/launch-app (app-path)
+  "Launch macOS application at APP-PATH."
+  (start-process "app-launcher" nil "open" "-a" app-path))
+
+(dolist (app (my/applications-directory))
+  (let* ((name (file-name-base app))
+         (fn   (intern (concat "app/open-" (replace-regexp-in-string " " "-" (downcase name))))))
+    (fset fn `(lambda () (interactive) (my/launch-app ,app)))
+    (put fn 'function-documentation (concat "Launch " name))
+    (defalias fn (symbol-function fn))))
 
 #+end_src
