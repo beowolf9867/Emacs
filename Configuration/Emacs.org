@@ -715,3 +715,56 @@
     (defalias fn (symbol-function fn))))
 
 #+end_src
+
+
+** Configuring lily-pond projects in emacs
+
+#+begin_src emacs-lisp
+
+  ;; Load LilyPond mode
+  (add-to-list 'load-path "/opt/homebrew/share/emacs/site-lisp/lilypond") ;; adjust path if Intel
+  (autoload 'LilyPond-mode "lilypond-mode")
+  (add-to-list 'auto-mode-alist '("\\.ly\\'" . LilyPond-mode))
+
+  ;; Hook for LilyPond mode
+  (add-hook 'LilyPond-mode-hook
+            (lambda ()
+              (turn-on-font-lock)
+              ;; Default compile command: run LilyPond and open PDF
+              (set (make-local-variable 'compile-command)
+                   (concat "lilypond " buffer-file-name " && open "
+                           (file-name-sans-extension buffer-file-name) ".pdf"))))
+
+
+#+end_src
+
+
+** Adding to eaf-framework
+
+#+begin_src emacs-lisp
+
+;;  (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework")
+;;  (add-to-list 'load-path "~/.emacs.d/site-lisp/eaf-browser")
+;;  (add-to-list 'load-path "~/.emacs.d/site-lisp/eaf-pdf-viewer")
+
+ ;; (setq eaf-python-command "~/.emacs.d/eaf-venv/bin/python3")
+
+  ;;(require 'eaf)
+ ;; (;;require 'eaf-browser)
+ ;; (require 'eaf-pdf-viewer)
+
+;;(use-package eaf
+ ;; :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
+  ;;:custom
+ ;; ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
+ ;; (eaf-browser-continue-where-left-off t)
+ ;; (eaf-browser-enable-adblocker t)
+  ;;(browse-url-browser-function 'eaf-open-browser)
+  ;;:config
+  ;;(defalias 'browse-web #'eaf-open-browser)
+  ;;(eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  ;;(eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  ;;(eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  ;;(eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+
+  #+end_src
