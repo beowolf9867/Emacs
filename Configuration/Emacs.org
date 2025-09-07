@@ -1,4 +1,4 @@
-#+Title Emacs config with explanations
+#+Title: Emacs config with explanations
 #+PROPERTY: header-args:emacs-lisp :tangle /Users/abdul/.emacs.d/init.el
 
 * Emacs config with explanations

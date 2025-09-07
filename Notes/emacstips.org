@@ -1,4 +1,4 @@
-#+Title Emacs Usage
+#+Title: Emacs Usage
 
 * Emacs Usage
 
