@@ -4,6 +4,7 @@
 
 (scroll-bar-mode 1) ;; enable scroll bar
 (menu-bar-mode 1) ;; enable menu bar
+(tool-bar-mode -1) ;; disable tool bar
 
 (load-theme 'modus-operandi-tritanopia t)
 

@@ -26,6 +26,7 @@
 
     (scroll-bar-mode 1) ;; enable scroll bar
     (menu-bar-mode 1) ;; enable menu bar
+    (tool-bar-mode -1) ;; disable tool bar
 
     (load-theme 'modus-operandi-tritanopia t)
 
@@ -768,3 +769,7 @@
   ;;(eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 
   #+end_src
+
+
+** Managing e-mail in Emacs
+ 
