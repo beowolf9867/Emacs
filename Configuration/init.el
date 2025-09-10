@@ -247,13 +247,18 @@
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((C . t)))
+ '((C . t)
+   (lilypond . t)
+   (shell . t)
+   (emacs-lisp . t)
+))
 
 (require 'org-tempo)
 
 (add-to-list 'org-structure-template-alist '("code" . "src C"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list `org-structure-template-alist `("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("ly" . "lilypond"))
 
 ;; Automatically tangle our Emacs.org config file when we save it
     (defun efs/org-babel-tangle-config ()
