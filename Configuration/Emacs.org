@@ -28,7 +28,8 @@
     (menu-bar-mode 1) ;; enable menu bar
     (tool-bar-mode -1) ;; disable tool bar
 
-    (load-theme 'modus-operandi-tritanopia t)
+    ;;(load-theme 'modus-operandi-tinted t)
+    (load-file "~/Projects/Emacs/Configuration/Themes/darkblue.el")
 
     (global-set-key (kbd "M-3") (lambda () (interactive) (insert "#")))
 
@@ -191,16 +192,22 @@
  - Org-agenda is amazing feature of org-mode allowing you to track all your tasks and more.
    - Here, we add all the agenda files that we feel we need.
 
+ - To add notifications with the macOS, we need to install ~org-alert~
+   - ~M-x package-install RET org-alert RET~
+
 
 *** Org-habit
+
 - If you have tasks that you do every day, setting the task to done would then mark it as completed and over time, a graph would form that you can view in ~org-agenda~.
 
 
 *** Org-todo
+
 - You can set tasks, with the tags ~TODO~, ~DONE~, but I felt that having the tag ~NEXT~ would help and so that was added, you can add however much you need.
 
 
 *** Org-refile
+
 - To make things even more amazing, ~org-refile~ enables you to note down a task in any old org file and then refile into another, more structured org file that is added to the ~org-refile-targets~ list.
   - The ~:maxlevel . 2~ indicates that you can refile even to the subheadings of that document, whereas ~:maxlevle . 1~ indicates that you can only refile to the headings.
 
@@ -223,100 +230,115 @@
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+          (defun efs/org-font-setup ()
+            ;; Replace list hyphen with dot
+            (font-lock-add-keywords 'org-mode
+                                    '(("^ *\\([-]\\) "
+                                       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-    ;; Set faces for heading levels
-;;    (dolist (face '((org-level-1 . 1.2)
-;;                    (org-level-2 . 1.1)
-;;                    (org-level-3 . 1.05)
-;;                    (org-level-4 . 1.0)
-;;                    (org-level-5 . 1.1)
-;;                    (org-level-6 . 1.1)
-;;                    (org-level-7 . 1.1)
-;;                    (org-level-8 . 1.1)))
-;;      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+            ;; Set faces for heading levels
+        ;;    (dolist (face '((org-level-1 . 1.2)
+        ;;                    (org-level-2 . 1.1)
+        ;;                    (org-level-3 . 1.05)
+        ;;                    (org-level-4 . 1.0)
+        ;;                    (org-level-5 . 1.1)
+        ;;                    (org-level-6 . 1.1)
+        ;;                    (org-level-7 . 1.1)
+        ;;                    (org-level-8 . 1.1)))
+        ;;      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
-     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+             ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+            (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+            (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+            (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+            (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+            (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+            (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+            (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 
-  (use-package org
-    :hook (org-mode . efs/org-mode-setup)
-    :config
-    (setq org-ellipsis " ▾")
+          (use-package org
+            :hook (org-mode . efs/org-mode-setup)
+            :config
+            (setq org-ellipsis " ▾")
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
+          (setq org-agenda-start-with-log-mode t)
+          (setq org-log-done 'time)
+          (setq org-log-into-drawer t)
 
-  (setq org-agenda-files			
-  	'("~/Orgfiles/Tasks/Tasks.org"
-  	  "~/Orgfiles/Tasks/Home.org"
-  	  "~/Orgfiles/Tasks/Uni.org"
-  	  "~/Orgfiles/Journal/Journal.org"))
+          (setq org-agenda-files			
+          	'("~/Orgfiles/Tasks/Tasks.org"
+          	  "~/Orgfiles/Tasks/Home.org"
+          	  "~/Orgfiles/Tasks/Uni.org"
+          	  "~/Orgfiles/Journal/Journal.org"
+        		  "~/Orgfiles/Tasks/timetable.org"))
 
-   (require 'org-habit)
-    (add-to-list 'org-modules 'org-habit)
-    (setq org-habit-graph-column 60)
+           (require 'org-habit)
+            (add-to-list 'org-modules 'org-habit)
+            (setq org-habit-graph-column 60)
 
-    (setq org-todo-keywords
-  	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")))
+            (setq org-todo-keywords
+          	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")))
 
-    (setq org-refile-targets
-      '(("~/Tasks/Tasks.org" :maxlevel . 2)
-        ("~/Tasks/Home.org" :maxlevel . 2)
-        ("~/Tasks/Uni.org" :maxlevel . 2)
-        ("~/Tasks/Journal.org" :maxlevel . 2)))
+            (setq org-refile-targets
+              '(("~/Tasks/Tasks.org" :maxlevel . 2)
+                ("~/Tasks/Home.org" :maxlevel . 2)
+                ("~/Tasks/Uni.org" :maxlevel . 2)
+                ("~/Tasks/Journal.org" :maxlevel . 2)))
 
-    ;; Save Org buffers after refiling!
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+            ;; Save Org buffers after refiling!
+            (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-  (setq org-tag-alist
-      '((:startgroup)
-         ; Put mutually exclusive tags here
-         (:endgroup)
-         ("assignment" . ?a)
-         ("research" . ?r)
-         ("assessment" . ?A)
-         ("quiz" . ?q)
-         ("lab" . ?l)
-         ("habit" . ?h)))
+          (setq org-tag-alist
+              '((:startgroup)
+                 ; Put mutually exclusive tags here
+                 (:endgroup)
+                 ("assignment" . ?a)
+                 ("research" . ?r)
+                 ("assessment" . ?A)
+                 ("quiz" . ?q)
+                 ("lab" . ?l)
+                 ("habit" . ?h)))
 
-  (setq org-capture-templates
-      `(("t" "Tasks / Projects")
-        ("tt" "Task" entry (file+olp "~/Orgfiles/Tasks/Tasks.org" "Quick-capture")
-             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+          (setq org-capture-templates
+              `(("t" "Tasks / Projects")
+                ("tt" "Task" entry (file+olp "~/Orgfiles/Tasks/Tasks.org" "Quick-capture")
+                     "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-        ("j" "Journal Entries")
-        ("jj" "Journal" entry
-             (file+olp+datetree "~/Orgfiles/Journal/Journal.org")
-             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-             ;; ,(dw/read-file-as-string "~/Orgfiles/Journal/Journal.org")
-             :clock-in :clock-resume
-             :empty-lines 1)
+                ("j" "Journal Entries")
+                ("jj" "Journal" entry
+                     (file+olp+datetree "~/Orgfiles/Journal/Journal.org")
+                     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                     ;; ,(dw/read-file-as-string "~/Orgfiles/Journal/Journal.org")
+                     :clock-in :clock-resume
+                     :empty-lines 1)
 
-        ("m" "Metrics Capture")
-        ("mh" "Health" table-line (file+headline "~/Orgfiles/Health/Health.org" "Health")
-         "| %U | %^{Type}  | %^{Food}  | %^{Calories} | %^{Notes}  |" :kill-buffer t)))
+                ("m" "Metrics Capture")
+                ("mh" "Health" table-line (file+headline "~/Orgfiles/Health/Health.org" "Health")
+                 "| %U | %^{Type}  | %^{Food}  | %^{Calories} | %^{Notes}  |" :kill-buffer t)))
 
-  (efs/org-font-setup))
+          (efs/org-font-setup))
 
-    
-  (use-package org-bullets
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  (require 'org-notifications)
+  (setq org-notifications-alert-time 10) ;; minutes before deadline
+  (setq org-notifications-notify-time 1) ;; how often to check (minutes)
+  (org-notifications-start)
+
+
+  (require 'org-pomodoro)
+  (setq org-pomodoro-length 25)   ;; work time in minutes
+  (setq org-pomodoro-short-break-length 5)
+  (setq org-pomodoro-long-break-length 15)
+  (setq org-pomodoro-play-sounds t) ;; optional, sound alert
+  (setq org-pomodoro-finished-sound "~/Sounds/pomodoro-done.aiff") ;; optional
+
+
+    (use-package org-bullets
+            :after org
+            :hook (org-mode . org-bullets-mode)
+            :custom
+            (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 #+end_src
 
